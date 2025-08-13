@@ -36,6 +36,7 @@ func main() {
 	uh := handler.NewUserHandler(uuc)
 
 	r.POST("/users/register", uh.RegisterHandler)
+	r.POST("/users/login", uh.LoginHandler)
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Hello, World!",

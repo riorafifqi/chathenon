@@ -10,6 +10,7 @@ import (
 type IUserRepo interface {
 	CreateUser(context.Context, entity.User) error
 	CheckUserExistByEmail(ctx context.Context, email string) (bool, error)
+	GetUserByEmail(ctx context.Context, email string) (entity.User, error)
 }
 
 type UserRepo struct {
@@ -47,4 +48,15 @@ func (ur UserRepo) CheckUserExistByEmail(ctx context.Context, email string) (boo
 	}
 
 	return exist, nil
+}
+
+func (ur UserRepo) GetUserByEmail(ctx context.Context, email string) (entity.User, error) {
+	var res entity.User
+
+	err := ur.db.WithContext(ctx).Take(&res, "email = ?", email).Error
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
 }

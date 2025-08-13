@@ -10,6 +10,7 @@ import (
 
 type IUserUseCase interface {
 	Register(ctx context.Context, user entity.User) error
+	Login(ctx context.Context, user entity.User) (string, error)
 }
 
 type UserUsecase struct {
@@ -46,4 +47,25 @@ func (uuc UserUsecase) Register(ctx context.Context, user entity.User) error {
 	}
 
 	return nil
+}
+
+func (uuc UserUsecase) Login(ctx context.Context, user entity.User) (string, error) {
+	res, err := uuc.ur.GetUserByEmail(ctx, user.Email)
+	if err != nil {
+		return "", err
+	}
+
+	// compare password
+	err = util.CompareHashPassword([]byte(res.Password), []byte(user.Password))
+	if err != nil {
+		return "", err
+	}
+
+	// generate jwt token
+	jwtToken, err := util.CreateToken(int(res.ID))
+	if err != nil {
+		return "", err
+	}
+
+	return jwtToken, nil
 }

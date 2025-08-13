@@ -20,7 +20,7 @@ func GenerateBcrypt(password string) (*string, error) {
 func CompareHashPassword(hashPassword []byte, userPassword []byte) error {
 	err := bcrypt.CompareHashAndPassword(hashPassword, userPassword)
 	if err != nil {
-		return bcrypt.ErrMismatchedHashAndPassword
+		return err
 	}
 	return nil
 }
